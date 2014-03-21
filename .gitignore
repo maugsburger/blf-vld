@@ -8,5 +8,6 @@ eagle.epf
 *.lst
 *.map
 *.o
+*.d
 *.sym
 .dep/
