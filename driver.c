@@ -410,16 +410,16 @@ ISR(WDT_vect)
 #ifdef PINSWITCH
             // abort mode programming if light stays on for more than two seconds
             if(state.prog_stage != prog_undef)
-                eeprom_write_byte((uint8_t *) EE_PROGSTAGE, prog_undef);
+                eeprom_update_byte((uint8_t *) EE_PROGSTAGE, prog_undef);
 #else
             // two seconds elapsed, reset click type to tap_none
-            eeprom_write_byte(click_cell, tap_none);
+            eeprom_update_byte(click_cell, tap_none);
 #endif
             break;
 
 #if defined(PROGRAMMABLE) && !defined(PINSWITCH)
         case 4:
-            eeprom_write_byte(click_cell, tap_long);
+            eeprom_update_byte(click_cell, tap_long);
 
 #ifdef PROGHELPER
             /* give hints on when to switch off in programming mode. Programming
@@ -818,7 +818,7 @@ static inline void do_program(const uint8_t last_click)
         if(last_click == tap_short){
             // sequence completed, update mode_arr and eeprom
             state.mode_arr[state.target_mode] = state.chosen_mode;
-            eeprom_write_byte((uint8_t *)EE_MODES_BASE + state.target_mode,
+            eeprom_update_byte((uint8_t *)EE_MODES_BASE + state.target_mode,
                     state.chosen_mode);
         }
         // fall through
@@ -1004,7 +1004,7 @@ int main(void)
     // write back state to eeprom but omit the mode configuration.
     // Minimises risk of corruption. Everything else will right itself
     // eventually, but modes will stay broken until reprogrammed.
-    eeprom_write_block(&state, 0, sizeof(State_t) - sizeof(state.mode_arr));
+    eeprom_update_block(&state, 0, sizeof(State_t) - sizeof(state.mode_arr));
 
     // set up PWM
     // set PWM pin to output
